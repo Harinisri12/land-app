@@ -108,9 +108,14 @@
   };
 
   // Handle form submission
-  async function handleSubmit() {
+  const handleSubmit = async () => {
+    if (!propertyId || !latitude || !longitude || !areaCity || !selectedState || !ownerPublicAddress || !defaultBidAmount) {
+      errorMessage = 'All fields are required!';
+      return;
+    }
+
     message = 'Deploying...........';
- 
+
     const form = new FormData();
     form.append('propertyId', propertyId);
     form.append('latitude', latitude);
@@ -119,28 +124,26 @@
     form.append('state', selectedState);
     form.append('ownerPublicAddress', ownerPublicAddress);
     form.append('defaultBidAmount', defaultBidAmount);
-    // form.append('documentUrl', documentHash); // Uncomment if documentUrl is required
 
     try {
       const response = await fetch('?/deploy', {
         method: 'POST',
         body: form
       });
-    
-      const result = await response.json();
-      const final: [object, boolean, string] = JSON.parse(result.data);
 
-      if (final[1]) {
-        message = `Smart contract deployed: https://whatsonchain.com/tx/` + final[2];
-        await storeTxid(propertyId, final[2]);
+      const result = await response.json();
+
+      if (result.deployed) {
+        message = `Smart contract deployed: https://whatsonchain.com/tx/${result.txid}`;
+        await storeTxid(propertyId, result.txid);
       } else {
-        message = `Deployment failed: ${final[2]}`;
+        message = `Deployment failed: ${result.error}`;
       }
     } catch (error) {
       console.error('Error submitting form:', error);
       message = 'Failed to upload document or deploy contract.';
     }
-  }
+  };
 
   // Function to store transaction ID
   async function storeTxid(propertyId: string, txid: string) {
@@ -154,51 +157,47 @@
   }
 </script>
 
-<nav class="bg-gray-200 border-gray-200">
-  <!-- <p>Issue New Property</p> -->
-  <div class=" bg-gray-200 hidden w-full md:block md:w-auto" id="navbar-default">
-    
-        <ul class=" font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-200  md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white">
-          <li><p>update Property</p></li>
-          <li class="top-right">
-            <a href="/dashboard" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-400 md:p-0" aria-current="page">Go to dashboard</a>
-          </li>
-          
-          
-        </ul>
-        </div>
+<nav class="navbar">
+  <div class="navbar-content">
+    <ul class="navbar-menu">
+      <li><p>Update Property</p></li>
+      <li class="top-right">
+        <a href="/dashboard" class="navbar-link" aria-current="page">Go to dashboard</a>
+      </li>
+    </ul>
+  </div>
 </nav>
 
 <main>
-  <h1>Update Existing Property</h1>
+  <h1 class="title">Update Existing Property</h1>
 
   <!-- Fetch Property Details Form -->
-  <form on:submit|preventDefault={fetchData}>
+  <form on:submit|preventDefault={fetchData} class="form">
     <div class="form-group">
       <label for="propertyId">Property ID:</label>
-      <input id="propertyId" type="text" bind:value={propertyId} placeholder="Enter Property ID" required />
+      <input id="propertyId" type="text" bind:value={propertyId} placeholder="Enter Property ID" required class="form-input" />
     </div>
-    <button type="submit">Fetch Details</button>
+    <button type="submit" class="form-button">Fetch Details</button>
   </form>
 
   <!-- Display Property Details Form -->
   {#if propertyId}
-    <form on:submit|preventDefault={updateProperty}>
+    <form on:submit|preventDefault={handleSubmit} class="form">
       <div class="form-group">
         <label for="latitude">Latitude:</label>
-        <input id="latitude" type="text" bind:value={latitude} placeholder="Latitude" />
+        <input id="latitude" type="text" bind:value={latitude} placeholder="Latitude" class="form-input" />
       </div>
       <div class="form-group">
         <label for="longitude">Longitude:</label>
-        <input id="longitude" type="text" bind:value={longitude} placeholder="Longitude" />
+        <input id="longitude" type="text" bind:value={longitude} placeholder="Longitude" class="form-input" />
       </div>
       <div class="form-group">
         <label for="areaCity">Area/City:</label>
-        <input id="areaCity" type="text" bind:value={areaCity} placeholder="Area/City" />
+        <input id="areaCity" type="text" bind:value={areaCity} placeholder="Area/City" class="form-input" />
       </div>
       <div class="form-group">
         <label for="state">State:</label>
-        <select id="state" bind:value={selectedState}>
+        <select id="state" bind:value={selectedState} class="form-select">
           {#each states as state}
             <option value={state}>{state}</option>
           {/each}
@@ -206,19 +205,17 @@
       </div>
       <div class="form-group">
         <label for="ownerPublicAddress">Owner Public Address:</label>
-        <input id="ownerPublicAddress" type="text" bind:value={ownerPublicAddress} placeholder="Owner Public Address" />
+        <input id="ownerPublicAddress" type="text" bind:value={ownerPublicAddress} placeholder="Owner Public Address" class="form-input" />
       </div>
       <div class="form-group">
         <label for="defaultBidAmount">Default Bid Amount:</label>
-        <input id="defaultBidAmount" type="number" bind:value={defaultBidAmount} placeholder="Default Bid Amount" />
+        <input id="defaultBidAmount" type="text" bind:value={defaultBidAmount} placeholder="Default Bid Amount" class="form-input" />
       </div>
-      <div class="button-container">
-        <button type="submit">Submit</button>
-      </div>
+      <button type="submit" class="form-button">Update Property</button>
     </form>
   {/if}
 
-  <!-- Display Error and Success Messages -->
+  <!-- Error and Message Display -->
   {#if errorMessage}
     <p class="error">{errorMessage}</p>
   {/if}
