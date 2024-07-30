@@ -73,6 +73,7 @@ export class Property extends SmartContract {
         this.stateSelected = stateSelected;
         this.ownerPublicAddress = ownerPublicAddress;
         this.defaultBidAmount = defaultBidAmount;
+        assert(true, "Update property method executed successfully.");
 
     }
 }
