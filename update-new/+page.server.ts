@@ -63,11 +63,8 @@ const deployContract = async (
 
 // Export the actions for deployment
 export const actions = {
-    deploy: async (event: RequestEvent) => {
-        if (event.request.method !== 'POST') {
-            return { deployed: false, error: 'Invalid request method' };
-        }
-        
+    deploy: async (event : RequestEvent) => {
+
         try {
             const formData = await parseFormData(event);
             const { propertyId, latitude, longitude, areaCity, stateSelected, ownerPublicAddress, defaultBidAmount } = formData;
@@ -82,7 +79,7 @@ export const actions = {
             return { deployed: true, txid };
         } catch (error) {
             console.error('Deployment failed:', error);
-            return { deployed: false, error: error.message || 'Deployment failed' };
+            return { deployed: false, error };
         }
     },
 };
