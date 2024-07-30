@@ -132,15 +132,18 @@
       });
 
       const result = await response.json();
+      const final: [object, boolean, string] = JSON.parse(result.data);
 
-      if (result.deployed) {
-        message = `Smart contract deployed: https://whatsonchain.com/tx/${result.txid}`;
-        await storeTxid(propertyId, result.txid);
+      if (final[1]) {
+        message = `Smart contract deployed: https://whatsonchain.com/tx/`+final[2];
+
+        await storeTxid(propertyId, final[2],latitude, longitude );
+      
       } else {
-        message = `Deployment failed: ${result.error}`;
+        message = `Deployment failed: ${final[2]}`;
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error(error);
       message = 'Failed to upload document or deploy contract.';
     }
   };
