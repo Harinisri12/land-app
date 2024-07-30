@@ -165,7 +165,7 @@
     <ul class="navbar-menu">
       <li><p>Update Property</p></li>
       <li class="top-right">
-        <a href="/dashboard" class="navbar-link" aria-current="page">Go to dashboard</a>
+             <a href="/dashboard" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-400 md:p-0" aria-current="page">Go to dashboard</a>
       </li>
     </ul>
   </div>
