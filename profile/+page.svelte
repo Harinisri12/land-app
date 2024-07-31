@@ -47,6 +47,17 @@
   });
 </script>
 
+<nav class="navbar">
+    <div class="navbar-content">
+      <ul class="navbar-menu">
+        <li><p>Profile</p></li>
+        <li class="top-right">
+          <a href="/dashboard" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-400 md:p-0" aria-current="page">Go to dashboard</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
 <style>
   /* General Styles */
   body {
@@ -106,6 +117,13 @@
     display: block;
     margin-top: 20px;
   }
+
+    .top-right {
+      color: rgb(46, 129, 217);
+     position: absolute;
+     top: 0;
+     right: 0;}
+  
 </style>
 
 <div class="container">
